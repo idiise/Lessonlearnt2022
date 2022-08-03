@@ -24,7 +24,7 @@ BaseMenageNER_2018 <- read_sav("C:/Users/USER MSI/Documents/R Project/Lessonlear
 
 # codebook Burkina Faso ------------------------------------------------------------
 
-BaseMenageBFA_2018<- to_factor(BaseMenageBFA_2018)
+BaseMenageBFA_2018<- BaseMenageBFA_2018 %>%  to_factor()
 codebook_BFA2018 <- var_label(BaseMenageBFA_2018)
 codebook_BFA2018 <- as.data.frame(do.call(rbind,codebook_BFA2018))
 codebook_BFA2018 <- codebook_BFA2018 %>% rownames_to_column()
@@ -32,7 +32,7 @@ codebook_BFA2018 <- codebook_BFA2018 %>% rownames_to_column()
 write_xlsx(codebook_BFA2018, "C:/Users/USER MSI/Documents/R Project/Lessonlearnt2022/Codebook/codebook_BFA2018.xlsx")
 
 
-# FCS Burkina -------------------------------------------------------------
+# FCS Burkina 2018 -------------------------------------------------------------
 
 # Rename variables using standardized variables namefor FCS
 # supprimer les lignes 255, 631,633,650 pour la variables céréales 
@@ -87,7 +87,7 @@ funModeling::freq(BaseMenageBFA_2018, "FCSCat28")
 mean(BaseMenageBFA_2018$FCSSugar)
 
 
-# HDDS Burkina ------------------------------------------------------------
+# HDDS Burkina 2018 ------------------------------------------------------------
 
 
 BaseMenageBFA_2018 <- BaseMenageBFA_2018 %>% mutate(
@@ -115,22 +115,66 @@ BaseMenageBFA_2018 <- BaseMenageBFA_2018 %>% mutate(
 )
 )
 
-plotly::ggplotly(funModeling::freq(BaseMenageBFA_2018, "HDDS_CH") )
+funModeling::freq(BaseMenageBFA_2018, "HDDS_CH")
 
 
-
-
-# rCSI Burkina ------------------------------------------------------------
+# rCSI Burkina 2018 ------------------------------------------------------------
 BaseMenageBFA_2018 <- BaseMenageBFA_2018 %>% mutate(
-  rCSILessQlty = replace_na(q00811Num,0),
-  rCSIBorrow = replace_na(q00812Num, 0),
-  rCSIMealSize = replace_na(q00813Num,0),
-  rCSIMealAdult = replace(q00814Num,0),
-  rCSIMealNb = replace_na(q00815Num,0)
-) %>% 
+  rCSILessQlty = case_when(q00811Num == "1 jour dans la semaine" ~ 1,
+                           q00811Num == "2 jours dans la semaine" ~ 2,
+                           q00811Num == "3 jours dans la semaine" ~ 3,
+                           q00811Num == "4 jours dans la semaine" ~ 4,
+                           q00811Num == "5 jours dans la semaine" ~ 5,
+                           q00811Num == "6 jours dans la semaine" ~ 6,
+                           q00811Num == "7 jours dans la semaine" ~ 7,
+                           TRUE ~ 0
+                           ),
+  rCSIBorrow = case_when(q00812Num == "1 jour dans la semaine" ~ 1,
+                         q00812Num == "2 jours dans la semaine" ~ 2,
+                         q00812Num == "3 jours dans la semaine" ~ 3,
+                         q00812Num == "4 jours dans la semaine" ~ 4,
+                         q00812Num == "5 jours dans la semaine" ~ 5,
+                         q00812Num == "6 jours dans la semaine" ~ 6,
+                         q00812Num == "7 jours dans la semaine" ~ 7,
+                         TRUE ~ 0
+                          ),
+  rCSIMealSize = case_when(q00813Num == "1 jour dans la semaine" ~ 1,
+                           q00813Num == "2 jours dans la semaine" ~ 2,
+                           q00813Num == "3 jours dans la semaine" ~ 3,
+                           q00813Num == "4 jours dans la semaine" ~ 4,
+                           q00813Num == "5 jours dans la semaine" ~ 5,
+                           q00813Num == "6 jours dans la semaine" ~ 6,
+                           q00813Num == "7 jours dans la semaine" ~ 7,
+                           TRUE ~ 0
+                          ),
+  rCSIMealAdult = case_when(q00814Num == "1 jour dans la semaine" ~ 1,
+                            q00814Num == "2 jours dans la semaine" ~ 2,
+                            q00814Num == "3 jours dans la semaine" ~ 3,
+                            q00814Num == "4 jours dans la semaine" ~ 4,
+                            q00814Num == "5 jours dans la semaine" ~ 5,
+                            q00814Num == "6 jours dans la semaine" ~ 6,
+                            q00814Num == "7 jours dans la semaine" ~ 7,
+                            TRUE ~ 0
+                            ),
+  rCSIMealNb = case_when(q00815Num == "1 jour dans la semaine" ~ 1,
+                         q00815Num == "2 jours dans la semaine" ~ 2,
+                         q00815Num == "3 jours dans la semaine" ~ 3,
+                         q00815Num == "4 jours dans la semaine" ~ 4,
+                         q00815Num == "5 jours dans la semaine" ~ 5,
+                         q00815Num == "6 jours dans la semaine" ~ 6,
+                         q00815Num == "7 jours dans la semaine" ~ 7,
+                         TRUE ~ 0
+                          )) %>% mutate(rCSI = rCSILessQlty + (2 * rCSIBorrow) + rCSIMealSize + (3 * rCSIMealAdult) + rCSIMealNb) %>% 
+  mutate(rCSI_CH = case_when(rCSI <= 3 ~ "Phase1",
+                             between(rCSI,4,18) ~ "Phase2",
+                             rCSI >= 19 ~ "Phase3"
+                             )
+         )
 
-class(BaseMenageBFA_2018$q00811Num)
-# Mali --------------------------------------------------------------------
+funModeling::freq(BaseMenageBFA_2018, "rCSI_CH")
+
+
+# Codebook Mali 2018 --------------------------------------------------------------------
 
 BaseMenageBMZ_MLI2018<- to_factor(BaseMenageBMZ_MLI2018)
 codebook_MLI2018 <- var_label(BaseMenageBMZ_MLI2018)
@@ -138,5 +182,41 @@ codebook_MLI2018 <- as.data.frame(do.call(rbind,codebook_MLI2018))
 codebook_MLI2018 <- codebook_MLI2018 %>% rownames_to_column()
 
 write_xlsx(codebook_MLI2018, "C:/Users/USER MSI/Documents/R Project/Lessonlearnt2022/Codebook/codebook_MLI2018.xlsx")
-# labeClled::
+
+
+# FCS Mali 2018 -----------------------------------------------------------
+
+BaseMenageBMZ_MLI2018 <- BaseMenageBMZ_MLI2018 %>% mutate(
+  FCSStapCer = replace_na(as.numeric(Score_conso_alimcerealeSCA_1_consom_dernier7_jours_cereal), 0),
+  FCSStapRoot = replace_na(as.numeric(Score_conso_alimracines_tuberculeSCA_2_consom_dernier7_jo), 0),
+  FCSPulse = replace_na(as.numeric(Score_conso_alimlegumineuses_noixSCA_3_consom_dernier7_jo), 0),
+  FCSDairy = replace_na(as.numeric(Score_conso_alimlait_autres_laitSCA_4_consom_dernier7_jou), 0),
+  FCSPr = replace_na(as.numeric(Score_conso_alimviande_poisson_oeufSCA_5_consom_dernier7), 0),
+  FCSVeg = replace_na(as.numeric(Score_conso_alimlegumes_feuillesSCA_6_consom_dernier7_jou), 0),
+  FCSFruit = replace_na(as.numeric(Score_conso_alimSCA_7_fruitsSCA_7_consom_dernier7_jours_f), 0),
+  FCSFat = replace_na(as.numeric(Score_conso_alimSCA_8_huile_gras_beurreSCA_8_consom_derni), 0),
+  FCSSugar = replace_na(as.numeric(Score_conso_alimSCA_9_sucre_produit_sucreSCA_9_consom_der), 0),
+  FCSCond = replace_na(as.numeric(Score_conso_alimSCA_10_epice_condimentSCA_10_consom_derni), 0)
+) %>% mutate(
+  FCSStap = FCSStapCer + FCSStapRoot
+) %>% mutate(
+  FCSStap = ifelse(FCSStap > 7, 7, FCSStap),
+  FCSVeg = ifelse(FCSVeg > 7 , 7 , FCSVeg),
+  FCSPr = ifelse(FCSPr > 7 , 7 , FCSPr),
+  FCSFruit = ifelse(FCSFruit > 7 , 7 , FCSFruit),
+  FCSPulse = ifelse(FCSPulse > 7 , 7 , FCSPulse),
+  FCSDairy = ifelse(FCSDairy > 7 , 7 , FCSDairy),
+  FCSSugar = ifelse(FCSSugar > 7 , 7 , FCSSugar),
+  FCSFat = ifelse(FCSFat > 7 , 7 , FCSFat),
+  FCSCond = ifelse(FCSCond > 7 , 7 , FCSCond)
+) %>% mutate(
+  FCS = (2 * FCSStap) + (3 *  FCSPulse) + FCSVeg + (4 * FCSPr) + FCSFruit + (4 + FCSDairy) + (0.5 * FCSSugar) + (0.5 * FCSFat)
+) %>% mutate(
+  FCSCat28 = case_when(
+    FCS <= 28 ~ "Poor",
+    between(FCS, 28.5,42) ~ "Bordeline",
+    FCS > 42 ~ "Accepatble"
+  )
+)
   
+funModeling::freq(BaseMenageBMZ_MLI2018, "FCSCat28")
