@@ -220,3 +220,38 @@ BaseMenageBMZ_MLI2018 <- BaseMenageBMZ_MLI2018 %>% mutate(
 )
   
 funModeling::freq(BaseMenageBMZ_MLI2018, "FCSCat28")
+
+
+# HDDS Mali 2018 ----------------------------------------------------------
+
+BaseMenageBMZ_MLI2018 <- BaseMenageBMZ_MLI2018 %>% mutate(
+  HDDSStapCer = case_when(Score_conso_alimcerealeSCA_1_mnag_atil_consom_hier_cereal == "Oui" ~ 1, TRUE ~ 0),
+  HDDSStapRoot = case_when(Score_conso_alimracines_tuberculeSCA_2_mnag_atil_consom_h == "Oui" ~ 1, TRUE ~ 0),
+  HDDSPulse = case_when(Score_conso_alimlegumineuses_noixSCA_3_mnag_atil_consom_h == "Oui" ~ 1, TRUE ~ 0),
+  HDDSDairy = case_when(Score_conso_alimlait_autres_laitSCA_4_mnag_atil_consom_hi == "Oui" ~ 1, TRUE ~ 0 ),
+  HDDSPrMeat = case_when(
+  Score_conso_alimviandeSCA_51_mnag_atil_consom_hier_viand == "Oui" | Score_conso_alimfoie_rognonSCA_52_mnag_atil_consom_hier_f == "Oui" ~ 1, TRUE ~ 0
+  ),
+  HDDSPrEgg = case_when(Score_conso_alimoeufsSCA_54_mnag_atil_consom_hier_oeufs == "Oui" ~ 1, TRUE ~ 0 ),
+  HDDSPrFish =  case_when(Score_conso_alimpoisson_eau_douce_merSCA_53_mnag_atil_con == "Oui" ~ 1, TRUE ~ 0 ),
+  HDDSVeg = case_when(
+    Score_conso_alimlegumes_feuillesSCA_6_mnag_atil_consom_hi == "Oui" ~ 1, TRUE ~ 0
+  ),
+  HDDSFruit = case_when(Score_conso_alimSCA_7_fruitsSCA_7_mnag_atil_consom_hier_f == "Oui" ~ 1, TRUE ~ 0),
+  HDDSFat = case_when(Score_conso_alimSCA_8_huile_gras_beurreSCA_8_mnag_atil_co == "Oui" ~ 1, TRUE ~ 0 ),
+  HDDSSugar = case_when(Score_conso_alimSCA_9_sucre_produit_sucreSCA_9_mnag_atil == "Oui" ~ 1, TRUE ~ 0),
+  HDDSCond = case_when(Score_conso_alimSCA_10_epice_condimentSCA_10_mnag_atil_co == "Oui" ~ 1, TRUE ~ 0)
+) %>% mutate(
+  HDDS = HDDSStapCer + HDDSStapRoot + HDDSPulse + HDDSVeg + HDDSDairy + HDDSPrMeat +
+    HDDSPrFish + HDDSPrEgg + HDDSFruit + HDDSFat + HDDSCond + HDDSSugar
+) %>% mutate(
+  HDDS_CH = case_when(
+    HDDS >= 5 ~ "Phase1",
+    HDDS == 4 ~ "Phase2",
+    HDDS == 3 ~ "Phase3",
+    HDDS == 2 ~ "Phase4",
+    HDDS < 2 ~ "phase 5"
+  )
+)
+
+funModeling::freq(BaseMenageBMZ_MLI2018, "HDDS_CH")
