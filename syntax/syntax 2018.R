@@ -278,3 +278,41 @@ BaseMenageBMZ_MLI2018 <- BaseMenageBMZ_MLI2018 %>% mutate(
 )
 
 funModeling::freq(BaseMenageBMZ_MLI2018, "rCSI_CH")
+
+# HHS Mali 2018 -----------------------------------------------------------
+
+BaseMenageBMZ_MLI2018 <- BaseMenageBMZ_MLI2018 %>% mutate(
+  HHhSNoFood_FR = IDF2_nombre_manque_nourriture,
+  HHhSBedHung_FR = IDF4_nombre_dormir_affame,
+  HHhSNotEat_FR = IDF6_jour_nuit_affame) %>% mutate(
+    HHhSNoFood_FR_r = case_when(
+      HHhSNoFood_FR == "Rarement (une ou deux fois)" ~ 1,
+      HHhSNoFood_FR == "Parfois (3-10 fois)" ~ 1,
+      HHhSNoFood_FR == "Souvent (plus de 10 fois)" ~ 2,
+      TRUE ~ 0
+    ),
+    HHhSBedHung_FR_r = case_when(
+      HHhSBedHung_FR == "Rarement (1 à 2 fois)" ~ 1,
+      HHhSBedHung_FR == "Parfois (3 à 10 fois)" ~ 1,
+      HHhSBedHung_FR == "Souvent (plus de 10 fois)" ~ 2,
+      TRUE ~0
+    ),
+    HHhSNotEat_FR_r = case_when(
+      HHhSNotEat_FR == "Rarement (1 à 2 fois)" ~ 1,
+      HHhSNotEat_FR == "Parfois (3 à 10 fois)" ~ 1,
+      HHhSNotEat_FR == "Souvent (plus de 10 fois)" ~ 2,
+      TRUE ~0
+    )
+  ) %>% mutate(
+    HHhS = HHhSNoFood_FR_r + HHhSBedHung_FR_r + HHhSNotEat_FR_r
+  ) %>% mutate(
+    HHhS_CH = case_when(
+      HHhS == 0 ~ "Phase1",
+      HHhS == 1 ~ "Phase2",
+      HHhS %in% c(2,3) ~ "Phase3",
+      HHhS == 4 ~ "Phase4",
+      HHhS >= 5 ~ "Phase5"
+    )
+  )
+  
+funModeling::freq(BaseMenageBMZ_MLI2018, "HHhS_CH")
