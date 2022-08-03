@@ -22,7 +22,7 @@ BaseMenageNER_2018 <- read_sav("C:/Users/USER MSI/Documents/R Project/Lessonlear
                                encoding="latin1")
 
 
-# Burkina Faso ------------------------------------------------------------
+# codebook Burkina Faso ------------------------------------------------------------
 
 BaseMenageBFA_2018<- to_factor(BaseMenageBFA_2018)
 codebook_BFA2018 <- var_label(BaseMenageBFA_2018)
@@ -36,7 +36,7 @@ write_xlsx(codebook_BFA2018, "C:/Users/USER MSI/Documents/R Project/Lessonlearnt
 
 # Rename variables using standardized variables namefor FCS
 # supprimer les lignes 255, 631,633,650 pour la variables céréales 
-BaseMenageBFA_2018 <- BaseMenageBFA_2018[-c(255,631,633,650),]
+# BaseMenageBFA_2018 <- BaseMenageBFA_2018[-c(255,631,633,650),]
 # trabsformer la variable céréales en numerique
 # BaseMenageBFA_2018$Cereale7_3_2Num <- as.numeric(BaseMenageBFA_2018$Cereale7_3_2Num)
 BaseMenageBFA_2018 <- BaseMenageBFA_2018 %>% mutate(
@@ -115,15 +115,19 @@ BaseMenageBFA_2018 <- BaseMenageBFA_2018 %>% mutate(
 )
 )
 
-funModeling::freq(BaseMenageBFA_2018, "HDDS_CH")  
+plotly::ggplotly(funModeling::freq(BaseMenageBFA_2018, "HDDS_CH") )
 
 
 
 
 # rCSI Burkina ------------------------------------------------------------
 BaseMenageBFA_2018 <- BaseMenageBFA_2018 %>% mutate(
-  rCSILessQlty = replace_na(q00811Num)
-)
+  rCSILessQlty = replace_na(q00811Num,0),
+  rCSIBorrow = replace_na(q00812Num, 0),
+  rCSIMealSize = replace_na(q00813Num,0),
+  rCSIMealAdult = replace(q00814Num,0),
+  rCSIMealNb = replace_na(q00815Num,0)
+) %>% 
 
 class(BaseMenageBFA_2018$q00811Num)
 # Mali --------------------------------------------------------------------
@@ -134,3 +138,5 @@ codebook_MLI2018 <- as.data.frame(do.call(rbind,codebook_MLI2018))
 codebook_MLI2018 <- codebook_MLI2018 %>% rownames_to_column()
 
 write_xlsx(codebook_MLI2018, "C:/Users/USER MSI/Documents/R Project/Lessonlearnt2022/Codebook/codebook_MLI2018.xlsx")
+# labeClled::
+  
