@@ -255,3 +255,26 @@ BaseMenageBMZ_MLI2018 <- BaseMenageBMZ_MLI2018 %>% mutate(
 )
 
 funModeling::freq(BaseMenageBMZ_MLI2018, "HDDS_CH")
+
+
+# rCSI 2018 Mali ----------------------------------------------------------
+
+BaseMenageBMZ_MLI2018 <- BaseMenageBMZ_MLI2018 %>% mutate(
+  rCSILessQlty = replace_na(Strategie_adaptation_alimentairestrategies_alimentairesCS, 0),
+  rCSIBorrow = replace_na(Strategie_adaptation_alimentairestrategies_alimentaires_A,0),
+  rCSIMealSize =replace_na(Strategie_adaptation_alimentairestrategies_alimentaires_D, 0),
+  rCSIMealAdult = replace_na(Strategie_adaptation_alimentairestrategies_alimentaires_C, 0),
+  rCSIMealNb = replace_na(Strategie_adaptation_alimentairestrategies_alimentaires_E, 0)
+) %>% mutate(
+  rCSI = rCSILessQlty + (2 *  rCSIBorrow) + (3 * rCSIMealAdult) +
+    rCSIMealSize +  rCSIMealNb
+) %>% mutate(
+  rCSI_CH = case_when(
+    rCSI <= 3 ~ "Phase1",
+    between(rCSI, 4, 18) ~ "Phase2",
+    rCSI >= 19 ~ "Phase3"
+    
+  )
+)
+
+funModeling::freq(BaseMenageBMZ_MLI2018, "rCSI_CH")
