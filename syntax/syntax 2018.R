@@ -356,3 +356,28 @@ BaseMenageBMZ_MLI2018 <- BaseMenageBMZ_MLI2018 %>% mutate(
   mutate(LhCSICat = fct_relevel(LhCSICat, c("Pasdestrategies", "StrategiesdeStress", "StrategiesdeCrise", "StrategiesdeUrgence")))
 
 funModeling::freq(BaseMenageBMZ_MLI2018, "LhCSICat")
+
+# Codebook Mauritania 2018 ------------------------------------------------
+# Le cari ainsi que les indicateurs et dépenses sont disponibles dans cette base
+# pas de HHS
+
+BaseMenageMRT_2018<- to_factor(BaseMenageMRT_2018)
+codebook_MRT2018 <- var_label(BaseMenageMRT_2018)
+codebook_MRT2018 <- as.data.frame(do.call(rbind,codebook_MRT2018))
+codebook_MRT2018 <- codebook_MRT2018 %>% rownames_to_column()
+
+write_xlsx(codebook_MRT2018, "C:/Users/USER MSI/Documents/R Project/Lessonlearnt2022/Codebook/codebook_MRT2018.xlsx")
+
+# FCS 2018 Mauritania -----------------------------------------------------
+
+BaseMenageMRT_2018 <- BaseMenageMRT_2018 %>% mutate(
+  FCSStap = FCS1,
+  FCSPulse = FCS2,
+  FCSDairy = FCS3,
+  FCSPr = FCS4,
+  FCSVeg = FCS5,
+  FCSFruit = FCS6,
+  FSCFat = FCS7,
+  FCSSugar = FCS8
+  
+)
