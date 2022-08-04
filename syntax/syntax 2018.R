@@ -433,3 +433,55 @@ BaseMenageMRT_2018 <- BaseMenageMRT_2018 %>% mutate(
 )
 
 funModeling::freq(rCSI_CH2_2, "rCSI_CH")
+
+
+# HHS 2018 Mauritania -----------------------------------------------------
+
+BaseMenageMRT_2018 <- BaseMenageMRT_2018 %>% mutate(
+  HHhSNoFood_Fr = NA,
+  HHhSBegHung_FR = NA,
+  HHhSNotEat_Fr = NA,
+  HHhS = NA,
+  HHhS_CH = NA 
+)
+
+# LCS 2018 RT -------------------------------------------------------------
+
+BaseMenageMRT_2018 <- BaseMenageMRT_2018 %>% mutate(
+  LhCSIStress1 = SS_stress1,
+  LhCSIStress2 = SS_stress2,
+  LhCSIStress3 = SS_stress3,
+  LhCSIStress4 = SS_stress4,
+  LhCSICrisis1 = SS_crise1,
+  LhCSICrisis2 = SS_crise2,
+  LhCSICrisis3 = SS_crise3,
+  LhCSIEmergency1 = SS_urgence1,
+  LhCSIEmergency2 = SS_urgence2,
+  LhCSIEmergency3 = SS_urgence3
+) %>% mutate(
+  stress_coping = case_when(
+    LhCSIStress1 == "Oui" | str_detect(LhCSIStress1,"Non, parce que j'ai déjà vendu ces avoirs ou mené cette activité au cours des 12 derniers mois et je ne peux pas con") ~ "Oui",
+    LhCSIStress2 == "Oui" | str_detect(LhCSIStress2,"Non, parce que j'ai déjà vendu ces avoirs ou mené cette activité au cours des 12 derniers mois et je ne peux pas con") ~ "Oui",
+    LhCSIStress3 == "Oui" | str_detect(LhCSIStress3,"Non, parce que j'ai déjà vendu ces avoirs ou mené cette activité au cours des 12 derniers mois et je ne peux pas con") ~ "Oui",
+    LhCSIStress4 == "Oui" | str_detect(LhCSIStress4,"Non, parce que j'ai déjà vendu ces avoirs ou mené cette activité au cours des 12 derniers mois et je ne peux pas con") ~ "Oui",
+    TRUE ~ "Non")) %>% 
+    mutate(crisis_coping = case_when(
+      LhCSICrisis1 == "Oui" | str_detect(LhCSICrisis1,"Non, parce que j'ai déjà vendu ces avoirs ou mené cette activité au cours des 12 derniers mois et je ne peux pas con") ~ "Oui",
+      LhCSICrisis2 == "Oui" | str_detect(LhCSICrisis2,"Non, parce que j'ai déjà vendu ces avoirs ou mené cette activité au cours des 12 derniers mois et je ne peux pas con") ~ "Oui",
+      LhCSICrisis3 == "Oui" | str_detect(LhCSICrisis3,"Non, parce que j'ai déjà vendu ces avoirs ou mené cette activité au cours des 12 derniers mois et je ne peux pas con") ~ "Oui",
+      TRUE ~ "Non")) %>% 
+    mutate(emergency_coping = case_when(
+      LhCSIEmergency1 == "Oui" | str_detect(LhCSIEmergency1,"Non, parce que j'ai déjà vendu ces avoirs ou mené cette activité au cours des 12 derniers mois et je ne peux pas con") ~ "Oui",
+      LhCSIEmergency2 == "Oui" | str_detect(LhCSIEmergency2,"Non, parce que j'ai déjà vendu ces avoirs ou mené cette activité au cours des 12 derniers mois et je ne peux pas con") ~ "Oui",
+      LhCSIEmergency3 == "Oui" | str_detect(LhCSIEmergency3,"Non, parce que j'ai déjà vendu ces avoirs ou mené cette activité au cours des 12 derniers mois et je ne peux pas con") ~ "Oui",
+      TRUE ~ "Non")) %>% mutate(
+        LhCSICat = case_when(
+          emergency_coping == "Oui" ~ "StrategiesdeUrgence",
+          crisis_coping == "Oui" ~ "StrategiesdeCrise",
+          stress_coping == "Oui" ~ "StrategiesdeStress",
+          TRUE ~ "PasdeStrategies"
+        )
+      ) %>% mutate(
+        LhCSICat = fct_relevel(LhCSICat,c("Pasdestrategies", "StrategiesdeStress", "StrategiesdeCrise", "StrategiesdeUrgence"))
+      )
+funModeling::freq(BaseMenageMRT_2018, "lcsi")
