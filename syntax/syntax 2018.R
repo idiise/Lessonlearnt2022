@@ -23,6 +23,7 @@ BaseMenageNER_2018 <- read_sav("C:/Users/USER MSI/Documents/R Project/Lessonlear
 
 
 # codebook Burkina Faso ------------------------------------------------------------
+# Pour le Burkina pas de HHS ni de LCS
 
 BaseMenageBFA_2018<- BaseMenageBFA_2018 %>%  to_factor()
 codebook_BFA2018 <- var_label(BaseMenageBFA_2018)
@@ -359,7 +360,7 @@ funModeling::freq(BaseMenageBMZ_MLI2018, "LhCSICat")
 
 # Codebook Mauritania 2018 ------------------------------------------------
 # Le cari ainsi que les indicateurs et dépenses sont disponibles dans cette base
-# pas de HHS
+# pas de HHS ni de condiment ni des 12 groupes HDDS
 
 BaseMenageMRT_2018<- to_factor(BaseMenageMRT_2018)
 codebook_MRT2018 <- var_label(BaseMenageMRT_2018)
@@ -378,6 +379,57 @@ BaseMenageMRT_2018 <- BaseMenageMRT_2018 %>% mutate(
   FCSVeg = FCS5,
   FCSFruit = FCS6,
   FSCFat = FCS7,
-  FCSSugar = FCS8
-  
+  FCSSugar = FCS8,
+  FCSCat28 = FCG
+) %>% mutate(
+  FCSCond = NA
 )
+
+funModeling::freq(BaseMenageMRT_2018, "FCSCat28")
+
+
+# HDDS Mauritanie 2018 ----------------------------------------------------
+BaseMenageMRT_2018 <- BaseMenageMRT_2018 %>% mutate(
+  HDDSStapCer = DDS1,
+  HDDSStapRoot = NA,
+  HDDSPulse = DDS2,
+  HDDSDairy = DDS3,
+  HDDSPrMeat = DDS4,
+  HDDSPrFish = NA,
+  HDDSPrEgg = NA,
+  HDDSVeg = DDS5,
+  HDDSFruit = DDS6,
+  HDDSFat = DDS7,
+  HDDSSugar = DDS8,
+  HDDSCond = NA,
+  HDDS = dds
+) %>% mutate(
+  HDDS_CH = case_when(HDDS >= 5 ~ "Phase1",
+                      HDDS == 4 ~ "Phase2",
+                      HDDS == 3 ~ "Phase3",
+                      HDDS == 2 ~ "Phase4",
+                      HDDS < 2 ~ "Phase2")
+)
+
+funModeling::freq(BaseMenageMRT_2018, "HDDS_CH")
+
+# rCSI Maur○itania 2018 ----------------------------------------------------
+
+BaseMenageMRT_2018 <- BaseMenageMRT_2018 %>% mutate(
+  rCSILessQlty = SS.1.1a,
+  rCSIBorrow = SS.1.1b,
+  rCSIMealSize = SS.1.1c,
+  rCSIMealAdult  = SS.1.1d,
+  rCSIMealNb = SS.1.1e,
+  rCSI2 = rCSI
+) %>% mutate(
+  rCSI = rCSILessQlty + (2 * rCSIBorrow) + (3 * rCSIMealAdult) + rCSIMealSize + rCSIMealNb
+) %>% mutate(
+  rCSI_CH = case_when(
+    rCSI <= 3 ~ "Phase1",
+    between(rCSI, 4,18) ~ "Phase2",
+    rCSI >= 19 ~ "Phase3"
+  )
+)
+
+funModeling::freq(rCSI_CH2_2, "rCSI_CH")
