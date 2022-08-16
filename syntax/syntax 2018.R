@@ -7,6 +7,7 @@ library(haven)
 library(here)
 library(labelled)
 library(writexl)
+library(expss)
 
 # import datasets ---------------------------------------------------------
 
@@ -407,7 +408,7 @@ BaseMenageMRT_2018 <- BaseMenageMRT_2018 %>% mutate(
   FCSPr = FCS4,
   FCSVeg = FCS5,
   FCSFruit = FCS6,
-  FSCFat = FCS7,
+  FCSFat = FCS7,
   FCSSugar = FCS8,
   FCSCat28 = FCG
 ) %>% mutate(
@@ -470,9 +471,9 @@ funModeling::freq(BaseMenageMRT_2018, "rCSI_CH")
 # HHS 2018 Mauritania -----------------------------------------------------
 
 BaseMenageMRT_2018 <- BaseMenageMRT_2018 %>% mutate(
-  HHhSNoFood_Fr = NA,
-  HHhSBegHung_FR = NA,
-  HHhSNotEat_Fr = NA,
+  HHhSNoFood_FR = NA,
+  HHhSBedHung_FR = NA,
+  HHhSNotEat_FR = NA,
   HHhS = NA,
   HHhS_CH = NA 
 )
@@ -649,9 +650,9 @@ funModeling::freq(BaseMenageNER_2018, "rCSI_CH")
 # HHS NER 2018 -------------------------------------------------------------
 
 BaseMenageNER_2018 <- BaseMenageNER_2018 %>% mutate(
-  HHhSNoFood_Fr = NA,
-  HHhSBegHung_FR = NA,
-  HHhSNotEat_Fr = NA,
+  HHhSNoFood_FR = NA,
+  HHhSBedHung_FR = NA,
+  HHhSNotEat_FR = NA,
   HHhS = NA,
   HHhS_CH = NA 
 )
@@ -729,14 +730,14 @@ BaseMenageTCD_2018 <- BaseMenageTCD_2018 %>% mutate(
   FCS = (FCSStap * 2) + (FCSPulse * 3) + FCSVeg + (FCSPr * 4)+
     (FCSDairy * 4) + FCSFruit + (0.5 * FCSFat) + (0.5 * FCSSugar)
 ) %>% mutate(
-  FCSCat = case_when(
+  FCSCat28 = case_when(
     FCS <= 28 ~ "Poor",
     between(FCS,28.5,42) ~ "Bordeline",
     FCS > 42 ~ "Acceptable"
   )
 )
 
-
+funModeling::freq(BaseMenageTCD_2018, "FCSCat28")
 # HDDS Tchad 2018 ---------------------------------------------------------
 
 BaseMenageTCD_2018 <- BaseMenageTCD_2018 %>% mutate(
@@ -786,11 +787,11 @@ BaseMenageTCD_2018 <- BaseMenageTCD_2018 %>% mutate(
 
 funModeling::freq(BaseMenageTCD_2018, "rCSI_CH")
 
-# HDDS --------------------------------------------------------------------
+# HHS Tchad 2018--------------------------------------------------------------------
 BaseMenageTCD_2018 <- BaseMenageTCD_2018 %>% mutate(
-  HHhSNoFood_Fr = NA,
-  HHhSBegHung_FR = NA,
-  HHhSNotEat_Fr = NA,
+  HHhSNoFood_FR = NA,
+  HHhSBedHung_FR = NA,
+  HHhSNotEat_FR = NA,
   HHhS = NA,
   HHhS_CH = NA 
 )
@@ -840,5 +841,105 @@ funModeling::freq(BaseMenageTCD_2018, "LhCSICat")
 # Vérification variables et compilation -----------------------------------
 # Burkina
 setdiff(variables,names(BaseMenageBFA_2018))
+BaseMenageBFA_2018 <- BaseMenageBFA_2018 %>% mutate(
+  Année = 2018,
+  Survey = "Baseline",
+  SurveyId = 1,
+  Commentaire = "Base Ménage 24 décembre 2018"
+)  %>% select(Survey, SurveyId,Année, Commentaire, which(names(BaseMenageBFA_2018) %in% variables))
+
 # Mali
 setdiff(variables,names(BaseMenageBMZ_MLI2018))
+BaseMenageBMZ_MLI2018 <- BaseMenageBMZ_MLI2018 %>% mutate(
+  Année = 2018,
+  Survey = "Baseline BMZ",
+  SurveyId = 1,
+  Commentaire = "BMZ Base Ménage 2018"
+) %>% select(Survey, SurveyId,Année, Commentaire, which(names(BaseMenageBMZ_MLI2018) %in% variables))
+
+# Mauritanie
+setdiff(variables,names(BaseMenageMRT_2018))
+BaseMenageMRT_2018 <- BaseMenageMRT_2018 %>% mutate(
+  Année = 2018,
+  Survey = "Baseline",
+  SurveyId = 1,
+  Commentaire = "Base Ménage FFA 2018"
+)  %>% select(Survey, SurveyId,Année, Commentaire, which(names(BaseMenageMRT_2018) %in% variables))
+
+# Niger
+setdiff(variables,names(BaseMenageNER_2018))
+BaseMenageNER_2018 <- BaseMenageNER_2018 %>% mutate(
+  Année = 2018,
+  Survey = "Baseline",
+  SurveyId = 1,
+  Commentaire = "Base Ménage TICSP Novembre 2018"
+)  %>% select(Survey, SurveyId,Année, Commentaire, which(names(BaseMenageNER_2018) %in% variables))
+
+# Tchad
+setdiff(variables,names(BaseMenageTCD_2018))
+BaseMenageTCD_2018 <- BaseMenageTCD_2018 %>% mutate(
+  Année = 2018,
+  Survey = "Baseline",
+  SurveyId = 1,
+  Commentaire = "Base Ménage  2018"
+)  %>% select(Survey, SurveyId,Année, Commentaire, which(names(BaseMenageTCD_2018) %in% variables))
+
+Baseline_regionale2018 <- rbind(BaseMenageBMZ_MLI2018, BaseMenageBFA_2018, BaseMenageMRT_2018,
+                                BaseMenageNER_2018, BaseMenageTCD_2018)
+
+Baseline_regionale2018 <- Baseline_regionale2018 %>% apply_labels(
+  FCSStap = "Consommation de céréal au cours des 7 derniers jours", 
+  FCSPulse = "Consommation de légumineuse au cours des 7 derniers jours", 
+  FCSDairy = "Consommation de Lait et Produits laitier au cours des 7 derniers jours",
+  FCSPr = "Consommation de viande, poisson oeuf au cours des 7 derniers jours", 
+  FCSVeg = "Consommation de Légumes au cours des 7 derniers jours", 
+  FCSFruit = "Consommation de Fruit au cours des 7 derniers jours", 
+  FCSFat = "Consommation de Huile et matières grasse au cours des 7 derniers jours", 
+  FCSSugar = "Consommation de Sucre au cours des 7 derniers jours", 
+  FCS = "Score de Consommation Alimentaire", 
+  FCSCat28 = "Groupe/Catégorie Score de consommation alimentaire (SCA)", 
+  FCSCond = "Consommation de Condiment  au cours des 7 derniers jours", 
+  HDDSStapCer = "Hier, consommation de céréales", 
+  HDDSStapRoot = "Hier, consommation de tubercules", 
+  HDDSPulse = "Hier, consommation de légumineuses", 
+  HDDSDairy = "Hier, consommation de Lait et produits laitiers", 
+  HDDSPrMeat = "Hier, consommation de viande", 
+  HDDSPrFish = "Hier, consommation de poisson", 
+  HDDSPrEgg = "Hier, consommation de œuf", 
+  HDDSVeg = "Hier, consommation de légumes", 
+  HDDSFruit = "Hier, consommation de Fruit", 
+  HDDSFat = "Hier, consommation de Huile et matères grasse", 
+  HDDSSugar = "Hier, consommation de Sucre", 
+  HDDSCond = "Hier, consommation de Condiment", 
+  HDDS = "Score de Diversité Alimentaires  des Ménages (HDDS)", 
+  HDDS_CH = "Groupe/Catégorie Score de Diversité Alimentaire des ménages", 
+  rCSILessQlty = "Consommation des aliments moins préférés et moins chers au cours des 7 derniers jours", 
+  rCSIBorrow = "Emprunter de la nourriture ou compter sur l'aide des parents au cours des 7 derniers jours", 
+  rCSIMealSize = "Diminuer la quantité consommé pendant les repas au cours des 7 derniers jours", 
+  rCSIMealAdult = "Restreindre la consommation des adultes pour nourrir les enfants au cours des 7 derniers jours", 
+  rCSIMealNb = "Diminuer le nombre de repas par jour au cours des 7 derniers jours", 
+  rCSI = "Indice Réduit des Stratégie de Survie", 
+  rCSI_CH = "Groupe/Catégorie rCSI", 
+  LhCSIStress1 = "Stratégie de Stress 1 au cours des 30 derniers jours", 
+  LhCSIStress2 = "Stratégie de Stress 2 au cours des 30 derniers jours", 
+  LhCSIStress3 = "Stratégie de Stress 3 au cours des 30 derniers jours", 
+  LhCSIStress4 = "Stratégie de Stress 4 au cours des 30 derniers jours", 
+  LhCSICrisis1 = "Stratégie de Crise 1 au cours des 30 derniers jours", 
+  LhCSICrisis2 = "Stratégie de Crise 2 au cours des 30 derniers jours", 
+  LhCSICrisis3 = "Stratégie de Crise 3 au cours des 30 derniers jours", 
+  LhCSIEmergency1 = "Stratégie d'urgence 1 au cours des 30 derniers jours", 
+  LhCSIEmergency2 = "Stratégie d'urgence 2 au cours des 30 derniers jours", 
+  LhCSIEmergency3 = "Stratégie d'urgence 3 au cours des 30 derniers jours", 
+  stress_coping = "Stratégie de Stress", 
+  crisis_coping = "Stratégie de Crise", 
+  emergency_coping = "Stratégie d'urgence", 
+  LhCSICat = "Groupe/Catégorie Statégie d'adaption aux moyens d'existence (LCS)", 
+  HHhSNoFood_FR = "Fréquence manque de nourriture dûe à une manque de ressources au cours des 30 derniers jours", 
+  HHhSBedHung_FR = "Fréquence dormir affamé au cours des 30 derniers jours", 
+  HHhSNotEat_FR = "Fréquence rien manger jour  et nuit au cours des 30 derniers jours", 
+  HHhS = "Indice  Domestique de la Faim", "HHhS_CH = Groupe/Catégorie HHS"
+)
+
+
+
+
