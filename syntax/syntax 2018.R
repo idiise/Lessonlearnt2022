@@ -19,7 +19,7 @@ List_data <- dir_ls(regexp = ".sav") %>%
   nom_base <- str_replace(string = nom_base,pattern = ".sav", replacement = "")
   names(List_data) <- nom_base
   list2env(List_data, .GlobalEnv)
-BaseMenageNER_2018 <- read_sav("C:/Users/USER MSI/Documents/R Project/Lessonlearnt2022/data/BaseMenageNER_2018.sav",
+BaseMenageNER_2018 <- read_sav("C:/Users/USER MSI/Documents/R Project/Lessonlearnt2022/data/other data/BaseMenageNER_2018.sav",
                                encoding="latin1")
 
 
@@ -839,6 +839,22 @@ BaseMenageTCD_2018 <- BaseMenageTCD_2018 %>% mutate(
 funModeling::freq(BaseMenageTCD_2018, "LhCSICat")
 
 # Vérification variables et compilation -----------------------------------
+variables <- c("FCSStap", "FCSPulse", "FCSDairy", 
+               "FCSPr", "FCSVeg", "FCSFruit", "FCSFat", 
+               "FCSSugar","FCS", "FCSCat28", "FCSCond", "HDDSStapCer", 
+               "HDDSStapRoot", "HDDSPulse", "HDDSDairy", 
+               "HDDSPrMeat", "HDDSPrFish", "HDDSPrEgg", 
+               "HDDSVeg", "HDDSFruit", "HDDSFat", "HDDSSugar", 
+               "HDDSCond", "HDDS", "HDDS_CH", "rCSILessQlty", 
+               "rCSIBorrow", "rCSIMealSize", "rCSIMealAdult", 
+               "rCSIMealNb", "rCSI", "rCSI_CH", "LhCSIStress1", 
+               "LhCSIStress2", "LhCSIStress3", "LhCSIStress4", 
+               "LhCSICrisis1", "LhCSICrisis2", "LhCSICrisis3", 
+               "LhCSIEmergency1", "LhCSIEmergency2", 
+               "LhCSIEmergency3", "stress_coping", 
+               "crisis_coping", "emergency_coping", 
+               "LhCSICat", "HHhSNoFood_FR", "HHhSBedHung_FR", "HHhSNotEat_FR", "HHhS", "HHhS_CH")
+
 # Burkina
 setdiff(variables,names(BaseMenageBFA_2018))
 BaseMenageBFA_2018 <- BaseMenageBFA_2018 %>% mutate(
@@ -939,7 +955,11 @@ Baseline_regionale2018 <- Baseline_regionale2018 %>% apply_labels(
   HHhSNotEat_FR = "Fréquence rien manger jour  et nuit au cours des 30 derniers jours", 
   HHhS = "Indice  Domestique de la Faim", "HHhS_CH = Groupe/Catégorie HHS"
 )
+Baseline_regionale2018 <- Baseline_regionale2018 %>% rename(
+  Annee = Année
+)
 
+write_sav(Baseline_regionale2018, "C:/Users/USER MSI/Documents/R Project/Lessonlearnt2022/data/Processed/Baseline_regionale2018.sav")
 
 
 
