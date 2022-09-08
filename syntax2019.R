@@ -463,3 +463,154 @@ BaseMenageMRT_2019 <- BaseMenageMRT_2019 %>% mutate(
       LhCSICat = fct_relevel(LhCSICat,c("Pasdestrategies", "StrategiesdeStress", "StrategiesdeCrise", "StrategiesdeUrgence"))
     )
 funModeling::freq(BaseMenageMRT_2019, "LhCSICat")
+
+
+# Codebook Niger 2019 -----------------------------------------------------
+
+BaseMenageNER_2019<- to_factor(BaseMenageNER_2019)
+codebook_NER2019 <- var_label(BaseMenageNER_2019)
+codebook_NER2019 <- as.data.frame(do.call(rbind,codebook_NER2019))
+codebook_NER2019 <- codebook_NER2019 %>% rownames_to_column()
+
+# write_xlsx(codebook_NER2019, "C:/Users/USER MSI/Documents/R Project/Lessonlearnt2022/Codebook/codebook_NER2019.xlsx")
+
+# FCS Niger 2019 ----------------------------------------------------------
+
+BaseMenageNER_2019 <- BaseMenageNER_2019 %>% mutate(
+  FCSStapCer = replace_na(CERB,0),
+  FCSStapRoot = replace_na(RACTUBB,0),
+  FCSPulse = replace_na(LEGUMINOIXB,0),
+  FCSVegOrg = replace_na(LEGUMORANB,0),
+  FCSVegGre = replace_na(LEGUMVERTB,0),
+  FCSVegOth = replace_na(AUTRLEGUMB,0),
+  FCSFruitOrg = replace_na(FRUITORANB,0),
+  FCSFruitOth = replace_na(AUTRFRUITB,0),
+  FCSPrMeatF = replace_na(VIANDEB,0),
+  FCSPrMeatO = replace_na(FOIROGNONB,0),
+  FCSPrFish = replace_na(POISSONB,0),
+  FCSPrEgg = replace_na(OEUFB,0),
+  FCSDairy = replace_na(LAITB,0),
+  FCSFat = replace_na(HUILEB,0),
+  FCSSugar = replace_na(SUCREB,0),
+  FCSCond = replace_na(EPICEB,0)
+  # FCS2 = FCS
+) %>% mutate(
+  FCSStap = FCSStapCer + FCSStapRoot,
+  FCSVeg = FCSVegOrg + FCSVegGre + FCSVegOth,
+  FCSPr = FCSPrMeatF + FCSPrFish + FCSPrEgg + FCSPrMeatO,
+  FCSFruit = FCSFruitOrg + FCSFruitOth
+) %>% mutate(
+  FCSStap = ifelse(FCSStap > 7 , 7 , FCSStap),
+  FCSVeg = ifelse(FCSVeg > 7 , 7 , FCSVeg),
+  FCSPr = ifelse(FCSPr > 7 , 7 , FCSPr),
+  FCSFruit = ifelse(FCSFruit > 7 , 7 , FCSFruit),
+  FCSPulse = ifelse(FCSPulse > 7 , 7 , FCSPulse),
+  FCSDairy = ifelse(FCSDairy > 7 , 7 , FCSDairy),
+  FCSSugar = ifelse(FCSSugar > 7 , 7 , FCSSugar),
+  FCSFat = ifelse(FCSFat > 7 , 7 , FCSFat),
+  FCSCond = ifelse(FCSCond > 7 , 7 , FCSCond)
+) %>% mutate(
+  FCS = (FCSStap * 2) + (FCSPulse * 3) + FCSVeg + (FCSPr * 4)+
+    (FCSDairy * 4) + FCSFruit + (0.5 * FCSFat) + (0.5 * FCSSugar)
+) %>% mutate(
+  FCSCat28 = case_when(
+    FCS <= 28 ~ "Poor",
+    between(FCS, 28.5,42) ~ "Bordeline",
+    FCS > 42 ~ "Acceptable"
+  )
+)
+
+funModeling::freq(BaseMenageNER_2019, "FCSCat28")
+
+# HDDS Niger 2019 ---------------------------------------------------------
+ # Pas de HDDS en 2019 pour le Niger
+
+BaseMenageNER_2018 <- BaseMenageNER_2018 %>% mutate(
+  HDDSStapCer = NA,
+  HDDSStapRoot = NA,
+  HDDSPulse = NA,
+  HDDSDairy = NA,
+  HDDSPrMeat = NA,
+  HDDSPrFish = NA,
+  HDDSPrEgg = NA,
+  HDDSVeg = NA,
+  HDDSFruit = NA,
+  HDDSFat = NA,
+  HDDSSugar = NA,
+  HDDSCond = NA,
+  HDDS = NA,
+  HDDS_CH = NA
+)
+
+
+# rCSI Niger 2019 ---------------------------------------------------------
+
+BaseMenageNER_2019 <- BaseMenageNER_2019 %>% mutate(
+  rCSILessQlty = replace_na(SS2,0),
+  rCSIBorrow = replace_na(SS3,0),
+  rCSIMealSize = replace_na(SS4,0),
+  rCSIMealAdult = replace_na(SS5,0),
+  rCSIMealNb = replace_na(SS6,0)
+) %>% mutate(
+  rCSI = rCSILessQlty + (2 * rCSIBorrow) + (3 * rCSIMealAdult) +
+    rCSIMealNb + rCSIMealSize
+) %>% mutate(
+  rCSI_CH = case_when(
+    rCSI <= 3 ~ "Phase1",
+    between(rCSI, 4,18) ~ "Phase2",
+    rCSI >= 19 ~ "Phase3"
+  )
+)
+
+funModeling::freq(BaseMenageNER_2019, "rCSI_CH")
+
+
+# HHS Niger 2019 ----------------------------------------------------------
+# pas de HHS au niger en 2019
+BaseMenageNER_2019 <- BaseMenageNER_2019 %>% mutate(
+  HHhSNoFood_FR = NA,
+  HHhSBedHung_FR = NA,
+  HHhSNotEat_FR = NA,
+  HHhS = NA,
+  HHhS_CH = NA 
+)
+
+# LCS Niger 2019 ----------------------------------------------------------
+
+BaseMenageNER_2019 <- BaseMenageNER_2019 %>%  mutate(
+  LhCSIStress1 = ss9x1,
+  LhCSIStress2 = ss13x1,
+  LhCSIStress3 = ss15x1,
+  LhCSIStress4 = ss17x1,
+  LhCSICrisis1 = ss10x1,
+  LhCSICrisis2 = ss11x1,
+  LhCSICrisis3 = ss12x1,
+  LhCSIEmergency1 = ss14x1,
+  LhCSIEmergency2 = ss16x1,
+  LhCSIEmergency3 = ss18x1
+) %>% mutate(
+  stress_coping = case_when(
+    LhCSIStress1 == "Oui" | str_detect(LhCSIStress1,"Non, parce que j'ai déjà vendu ces avoirs ou mené cette activité au cours des 12 derniers mois et je ne peux pas con") ~ "Oui",
+    LhCSIStress2 == "Oui" | str_detect(LhCSIStress2,"Non, parce que j'ai déjà vendu ces avoirs ou mené cette activité au cours des 12 derniers mois et je ne peux pas con") ~ "Oui",
+    LhCSIStress3 == "Oui" | str_detect(LhCSIStress3,"Non, parce que j'ai déjà vendu ces avoirs ou mené cette activité au cours des 12 derniers mois et je ne peux pas con") ~ "Oui",
+    LhCSIStress4 == "Oui" | str_detect(LhCSIStress4,"Non, parce que j'ai déjà vendu ces avoirs ou mené cette activité au cours des 12 derniers mois et je ne peux pas con") ~ "Oui",
+    TRUE ~ "Non")) %>% 
+  mutate(crisis_coping = case_when(
+    LhCSICrisis1 == "Oui" | str_detect(LhCSICrisis1,"Non, parce que j'ai déjà vendu ces avoirs ou mené cette activité au cours des 12 derniers mois et je ne peux pas con") ~ "Oui",
+    LhCSICrisis2 == "Oui" | str_detect(LhCSICrisis2,"Non, parce que j'ai déjà vendu ces avoirs ou mené cette activité au cours des 12 derniers mois et je ne peux pas con") ~ "Oui",
+    LhCSICrisis3 == "Oui" | str_detect(LhCSICrisis3,"Non, parce que j'ai déjà vendu ces avoirs ou mené cette activité au cours des 12 derniers mois et je ne peux pas con") ~ "Oui",
+    TRUE ~ "Non")) %>% 
+  mutate(emergency_coping = case_when(
+    LhCSIEmergency1 == "Oui" | str_detect(LhCSIEmergency1,"Non, parce que j'ai déjà vendu ces avoirs ou mené cette activité au cours des 12 derniers mois et je ne peux pas con") ~ "Oui",
+    LhCSIEmergency2 == "Oui" | str_detect(LhCSIEmergency2,"Non, parce que j'ai déjà vendu ces avoirs ou mené cette activité au cours des 12 derniers mois et je ne peux pas con") ~ "Oui",
+    LhCSIEmergency3 == "Oui" | str_detect(LhCSIEmergency3,"Non, parce que j'ai déjà vendu ces avoirs ou mené cette activité au cours des 12 derniers mois et je ne peux pas con") ~ "Oui",
+    TRUE ~ "Non")) %>% mutate(
+      LhCSICat = case_when(
+        emergency_coping == "Oui" ~ "StrategiesdeUrgence",
+        crisis_coping == "Oui" ~ "StrategiesdeCrise",
+        stress_coping == "Oui" ~ "StrategiesdeStress",
+        TRUE ~ "PasdeStrategies"
+      )
+    )
+
+funModeling::freq(BaseMenageNER_2019, "LhCSICat")
