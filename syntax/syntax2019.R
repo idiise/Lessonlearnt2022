@@ -26,12 +26,15 @@ BaseMenageMRT_2019 <- read_stata("C:/Users/USER MSI/Documents/R Project/Lessonle
 # Codebook Burkina 2019 ----------------------------------------------------
 
 BaseMenageBFA_2019<- to_factor(BaseMenageBFA_2019)
-codebook_BFA2019 <- var_label(BaseMenageBFA_2019)
-codebook_BFA2019 <- as.data.frame(do.call(rbind,codebook_BFA2019))
-codebook_BFA2019 <- codebook_BFA2019 %>% rownames_to_column()
+# codebook_BFA2019 <- var_label(BaseMenageBFA_2019)
+# codebook_BFA2019 <- as.data.frame(do.call(rbind,codebook_BFA2019))
+# codebook_BFA2019 <- codebook_BFA2019 %>% rownames_to_column()
 
 # write_xlsx(codebook_BFA2019, "C:/Users/USER MSI/Documents/R Project/Lessonlearnt2022/Codebook/codebook_BFA2019.xlsx")
-
+oldBFA <- c("Region", "Province", "taille_menage", "Q_1_6_sexe", "Q_1_7_statut", "Q_1_8_age", "Q_1_9_instruction")
+newBFA <- c("ADMIN1Name", "ADMIN2Name", "HHSize", "HHHSex", "RelationHHH", "HHHAge", "HHHEduc")
+data.table::setnames(BaseMenageBFA_2019, old = oldBFA,
+                     new = newBFA)
 
 # FCS Burkina 2019 --------------------------------------------------------
 # on calcul le FCS avant de faire  to_factor dans la partie Codebook Burkina
@@ -192,12 +195,15 @@ funModeling::freq(BaseMenageBFA_2019, "LhCSICat")
 # Codebook Mali 2019 ------------------------------------------------------
 
 BaseMenageMLI_2019<- to_factor(BaseMenageMLI_2019)
-codebook_MLI2019 <- var_label(BaseMenageMLI_2019)
-codebook_MLI2019 <- as.data.frame(do.call(rbind,codebook_MLI2019))
-codebook_MLI2019 <- codebook_MLI2019 %>% rownames_to_column()
+# codebook_MLI2019 <- var_label(BaseMenageMLI_2019)
+# codebook_MLI2019 <- as.data.frame(do.call(rbind,codebook_MLI2019))
+# codebook_MLI2019 <- codebook_MLI2019 %>% rownames_to_column()
 
 # write_xlsx(codebook_MLI2019, "C:/Users/USER MSI/Documents/R Project/Lessonlearnt2022/Codebook/codebook_MLI2019.xlsx")
-
+oldMLI <- c("REGION", "Q12", "Q22", "Q23", "Q24", "Q25", "Q26")
+newMLI <- c("ADMIN1Name", "ADMIN2Name", "HHHSex", "HHHAge", "RelationHHH", "HHHEduc", "HHSize")
+data.table::setnames(BaseMenageMLI_2019, old = oldMLI,
+                     new = newMLI)
 
 # FCS MaAli 2019 --------------------------------------------------------
 
@@ -334,11 +340,20 @@ funModeling::freq(BaseMenageMLI_2019, "LhCSICat")
 # Codebook Mauritania 2019 ------------------------------------------------
 
 BaseMenageMRT_2019<- to_factor(BaseMenageMRT_2019)
-codebook_MRT2019 <- var_label(BaseMenageMRT_2019)
-codebook_MRT2019 <- as.data.frame(do.call(rbind,codebook_MRT2019))
-codebook_MRT2019 <- codebook_MRT2019 %>% rownames_to_column()
+# codebook_MRT2019 <- var_label(BaseMenageMRT_2019)
+# codebook_MRT2019 <- as.data.frame(do.call(rbind,codebook_MRT2019))
+# codebook_MRT2019 <- codebook_MRT2019 %>% rownames_to_column()
 
 # write_xlsx(codebook_MRT2019, "C:/Users/USER MSI/Documents/R Project/Lessonlearnt2022/Codebook/codebook_MRT2019.xlsx")
+
+oldMRT <- c("IG_3", "IG_4", "CCM_3", "CCM_4", "taill_men")
+newMRT <- c("ADMIN1Name", "ADMIN2Name", "HHHSex", "HHHAge", "HHSize")
+data.table::setnames(BaseMenageMRT_2019, old = oldMRT, new = newMRT)
+
+BaseMenageMRT_2019 <- BaseMenageMRT_2019 %>% mutate(
+  RelationHHH = NA,
+  HHHEduc = NA
+)
 
 # FCS Mauritania 2019 -----------------------------------------------------
 # pas de condiment
@@ -468,11 +483,19 @@ funModeling::freq(BaseMenageMRT_2019, "LhCSICat")
 # Codebook Niger 2019 -----------------------------------------------------
 
 BaseMenageNER_2019<- to_factor(BaseMenageNER_2019)
-codebook_NER2019 <- var_label(BaseMenageNER_2019)
-codebook_NER2019 <- as.data.frame(do.call(rbind,codebook_NER2019))
-codebook_NER2019 <- codebook_NER2019 %>% rownames_to_column()
+# codebook_NER2019 <- var_label(BaseMenageNER_2019)
+# codebook_NER2019 <- as.data.frame(do.call(rbind,codebook_NER2019))
+# codebook_NER2019 <- codebook_NER2019 %>% rownames_to_column()
 
 # write_xlsx(codebook_NER2019, "C:/Users/USER MSI/Documents/R Project/Lessonlearnt2022/Codebook/codebook_NER2019.xlsx")
+
+oldNER <- c("id1", "id2b", "Somtaille", "rc7", "rc8", "rc9")
+newNER <- c("ADMIN1Name", "ADMIN2Name", "HHSize", "HHHSex", "RelationHHH", "HHHEduc")
+data.table::setnames(BaseMenageNER_2019, old = oldNER,
+                     new = newNER)
+BaseMenageNER_2019 <- BaseMenageNER_2019 %>% mutate(
+  HHHAge = NA
+)
 
 # FCS Niger 2019 ----------------------------------------------------------
 
@@ -618,11 +641,19 @@ funModeling::freq(BaseMenageNER_2019, "LhCSICat")
 # Codebook Tchad 2019 -----------------------------------------------------
 
 BaseMenageTCD_2019<- to_factor(BaseMenageTCD_2019)
-codebook_TCD2019 <- var_label(BaseMenageTCD_2019)
-codebook_TCD2019 <- as.data.frame(do.call(rbind,codebook_TCD2019))
-codebook_TCD2019 <- codebook_TCD2019 %>% rownames_to_column()
+# codebook_TCD2019 <- var_label(BaseMenageTCD_2019)
+# codebook_TCD2019 <- as.data.frame(do.call(rbind,codebook_TCD2019))
+# codebook_TCD2019 <- codebook_TCD2019 %>% rownames_to_column()
 
 # write_xlsx(codebook_TCD2019, "C:/Users/USER MSI/Documents/R Project/Lessonlearnt2022/Codebook/codebook_TCD2019.xlsx")
+
+oldTCD <- c("@1.02NomdelaProvince", "@1.03NomduDépartement", "@2.3.2SexeduCM", "@2.3.3Quelestlâgeduchefdeménage", "@2.3.4Quelestlestatutmatrimonialduchefdeménage", "@2.3.6Quelestleniveaudinstructionduchefdeménage")
+newTCD <- c("ADMIN1Name", "ADMIN2Name", "HHHSex", "HHHAge", "RelationHHH", "HHHEduc")
+data.table::setnames(BaseMenageTCD_2019, old = oldTCD,
+                     new = newTCD)
+BaseMenageTCD_2019 <- BaseMenageTCD_2019 %>% mutate(
+  HHSize = NA
+)
 
 # FCS Tchad 2019 ----------------------------------------------------------
 
@@ -795,3 +826,167 @@ BaseMenageTCD_2019 <- BaseMenageTCD_2019 %>% mutate(
       )
     )
 funModeling::freq(BaseMenageTCD_2019, "LhCSICat")
+
+
+# Vérification et merging -------------------------------------------------
+
+variables <- c("ADMIN1Name", "ADMIN2Name", "HHSize", "HHHSex", 
+               "HHHAge", "HHHEduc", "RelationHHH",
+               "FCSStap", "FCSPulse", "FCSDairy", 
+               "FCSPr", "FCSVeg", "FCSFruit", "FCSFat", 
+               "FCSSugar","FCS", "FCSCat28", "FCSCond", "HDDSStapCer", 
+               "HDDSStapRoot", "HDDSPulse", "HDDSDairy", 
+               "HDDSPrMeat", "HDDSPrFish", "HDDSPrEgg", 
+               "HDDSVeg", "HDDSFruit", "HDDSFat", "HDDSSugar", 
+               "HDDSCond", "HDDS", "HDDS_CH", "rCSILessQlty", 
+               "rCSIBorrow", "rCSIMealSize", "rCSIMealAdult", 
+               "rCSIMealNb", "rCSI", "rCSI_CH", "LhCSIStress1", 
+               "LhCSIStress2", "LhCSIStress3", "LhCSIStress4", 
+               "LhCSICrisis1", "LhCSICrisis2", "LhCSICrisis3", 
+               "LhCSIEmergency1", "LhCSIEmergency2", 
+               "LhCSIEmergency3", "stress_coping", 
+               "crisis_coping", "emergency_coping", 
+               "LhCSICat", "HHhSNoFood_FR", "HHhSBedHung_FR", "HHhSNotEat_FR", "HHhS", "HHhS_CH")
+# Burkina
+setdiff(variables,names(BaseMenageBFA_2019))
+BaseMenageBFA_2019 <- BaseMenageBFA_2019 %>% mutate(
+  ADMIN0Name = "Burkina Fasso",
+  Année = 2019,
+  Survey = "Baseline",
+  SurveyId = 1,
+  Commentaire = "Base ménage de 2020 ajouté en 2019"
+)  %>% select(ADMIN0Name,Survey, SurveyId,Année, Commentaire, which(names(BaseMenageBFA_2019) %in% variables))
+
+# Mali
+setdiff(variables,names(BaseMenageMLI_2019))
+BaseMenageMLI_2019 <- BaseMenageMLI_2019 %>% mutate(
+  ADMIN0Name = "Mali",
+  Année = 2019,
+  Survey = "Baseline BMZ",
+  SurveyId = 1,
+  Commentaire = "Mali DPMO AABF WF septembre 2019"
+) %>% select(ADMIN0Name,Survey, SurveyId,Année, Commentaire, which(names(BaseMenageMLI_2019) %in% variables))
+
+# Mauritanie
+setdiff(variables,names(BaseMenageMRT_2019))
+BaseMenageMRT_2019 <- BaseMenageMRT_2019 %>% mutate(
+  ADMIN0Name = "Mauritania",
+  Année = 2019,
+  Survey = "Baseline",
+  SurveyId = 1,
+  Commentaire = "Enquête annuelle 2019"
+)  %>% select(ADMIN0Name,Survey, SurveyId,Année, Commentaire, which(names(BaseMenageMRT_2019) %in% variables))
+
+# Niger
+setdiff(variables,names(BaseMenageNER_2019))
+BaseMenageNER_2019 <- BaseMenageNER_2019 %>% mutate(
+  ADMIN0Name = "Niger",
+  Année = 2019,
+  Survey = "Baseline",
+  SurveyId = 1,
+  Commentaire = "Base Ménage Sentinelle 2019"
+)  %>% select(ADMIN0Name,Survey, SurveyId,Année, Commentaire, which(names(BaseMenageNER_2019) %in% variables))
+
+
+# Tchad
+setdiff(variables,names(BaseMenageTCD_2019))
+BaseMenageTCD_2019 <- BaseMenageTCD_2019 %>% mutate(
+  ADMIN0Name = "Chad",
+  Année = 2019,
+  Survey = "Baseline",
+  SurveyId = 1,
+  Commentaire = "Base Ménage  BMZ novembre 2019"
+)  %>% select(ADMIN0Name,Survey, SurveyId,Année, Commentaire, which(names(BaseMenageTCD_2019) %in% variables))
+
+Baseline_regionale2019 <- rbind(
+  BaseMenageBFA_2019, BaseMenageMLI_2019,
+  BaseMenageMRT_2019, BaseMenageNER_2019,
+  BaseMenageTCD_2019
+)
+
+# sauvegarde et labélisation
+# BaseMenageNER_2019 <- read_stata("data/Baseline 2019/BaselineMRT_2019.dta")
+
+Baseline_regionale2019 <- Baseline_regionale2019 %>% apply_labels(
+  ADMIN1Name = "Région/Wilaya",
+  ADMIN2Name = "Département/MOUGHTAA",
+  HHHSex = "Sexe du chef de ménage",
+  HHHAge = "Age du chef de ménage",
+  HHHEduc = "Niveau d'instruction du chef de ménage",
+  RelationHHH = "Situation matrimoniale du chef de ménage",
+  HHSize = "Taille du ménage",
+  FCSStap = "Consommation de céréal au cours des 7 derniers jours", 
+  FCSPulse = "Consommation de légumineuse au cours des 7 derniers jours", 
+  FCSDairy = "Consommation de Lait et Produits laitier au cours des 7 derniers jours",
+  FCSPr = "Consommation de viande, poisson oeuf au cours des 7 derniers jours", 
+  FCSVeg = "Consommation de Légumes au cours des 7 derniers jours", 
+  FCSFruit = "Consommation de Fruit au cours des 7 derniers jours", 
+  FCSFat = "Consommation de Huile et matières grasse au cours des 7 derniers jours", 
+  FCSSugar = "Consommation de Sucre au cours des 7 derniers jours", 
+  FCS = "Score de Consommation Alimentaire", 
+  FCSCat28 = "Groupe/Catégorie Score de consommation alimentaire (SCA)", 
+  FCSCond = "Consommation de Condiment  au cours des 7 derniers jours", 
+  HDDSStapCer = "Hier, consommation de céréales", 
+  HDDSStapRoot = "Hier, consommation de tubercules", 
+  HDDSPulse = "Hier, consommation de légumineuses", 
+  HDDSDairy = "Hier, consommation de Lait et produits laitiers", 
+  HDDSPrMeat = "Hier, consommation de viande", 
+  HDDSPrFish = "Hier, consommation de poisson", 
+  HDDSPrEgg = "Hier, consommation de œuf", 
+  HDDSVeg = "Hier, consommation de légumes", 
+  HDDSFruit = "Hier, consommation de Fruit", 
+  HDDSFat = "Hier, consommation de Huile et matères grasse", 
+  HDDSSugar = "Hier, consommation de Sucre", 
+  HDDSCond = "Hier, consommation de Condiment", 
+  HDDS = "Score de Diversité Alimentaires  des Ménages (HDDS)", 
+  HDDS_CH = "Groupe/Catégorie Score de Diversité Alimentaire des ménages", 
+  rCSILessQlty = "Consommation des aliments moins préférés et moins chers au cours des 7 derniers jours", 
+  rCSIBorrow = "Emprunter de la nourriture ou compter sur l'aide des parents au cours des 7 derniers jours", 
+  rCSIMealSize = "Diminuer la quantité consommé pendant les repas au cours des 7 derniers jours", 
+  rCSIMealAdult = "Restreindre la consommation des adultes pour nourrir les enfants au cours des 7 derniers jours", 
+  rCSIMealNb = "Diminuer le nombre de repas par jour au cours des 7 derniers jours", 
+  rCSI = "Indice Réduit des Stratégie de Survie", 
+  rCSI_CH = "Groupe/Catégorie rCSI", 
+  LhCSIStress1 = "Stratégie de Stress 1 au cours des 30 derniers jours", 
+  LhCSIStress2 = "Stratégie de Stress 2 au cours des 30 derniers jours", 
+  LhCSIStress3 = "Stratégie de Stress 3 au cours des 30 derniers jours", 
+  LhCSIStress4 = "Stratégie de Stress 4 au cours des 30 derniers jours", 
+  LhCSICrisis1 = "Stratégie de Crise 1 au cours des 30 derniers jours", 
+  LhCSICrisis2 = "Stratégie de Crise 2 au cours des 30 derniers jours", 
+  LhCSICrisis3 = "Stratégie de Crise 3 au cours des 30 derniers jours", 
+  LhCSIEmergency1 = "Stratégie d'urgence 1 au cours des 30 derniers jours", 
+  LhCSIEmergency2 = "Stratégie d'urgence 2 au cours des 30 derniers jours", 
+  LhCSIEmergency3 = "Stratégie d'urgence 3 au cours des 30 derniers jours", 
+  stress_coping = "Stratégie de Stress", 
+  crisis_coping = "Stratégie de Crise", 
+  emergency_coping = "Stratégie d'urgence", 
+  LhCSICat = "Groupe/Catégorie Statégie d'adaption aux moyens d'existence (LCS)", 
+  HHhSNoFood_FR = "Fréquence manque de nourriture dûe à une manque de ressources au cours des 30 derniers jours", 
+  HHhSBedHung_FR = "Fréquence dormir affamé au cours des 30 derniers jours", 
+  HHhSNotEat_FR = "Fréquence rien manger jour  et nuit au cours des 30 derniers jours", 
+  HHhS = "Indice  Domestique de la Faim", "HHhS_CH = Groupe/Catégorie HHS",
+  HHhS_CH = "Groupe/Catégorie HHS"
+)
+Baseline_regionale2019 <- Baseline_regionale2019 %>% rename(
+  Annee = Année
+)
+
+n <- 120
+
+Baseline_regionale2019_2 <- Baseline_regionale2019 %>%
+  mutate_all(
+    strtrim, width = n
+  )
+
+write_sav(Baseline_regionale2019_2, "C:/Users/USER MSI/Documents/R Project/Lessonlearnt2022/data/Processed/Last/Baseline_regionale2019.sav")
+
+# compilation Finale
+Baseline_regionale2018 <- read_sav("C:/Users/USER MSI/Documents/R Project/Lessonlearnt2022/data/Processed/Last/Baseline_regionale2018.sav")
+Baseline_regionale2018_2019 <- rbind(Baseline_regionale2018, Baseline_regionale2019)
+
+Baseline_regionale2018_2019 <- Baseline_regionale2018_2019 %>% 
+  mutate_all(
+    strtrim, width = n
+  )
+
+write_sav(Baseline_regionale2018_2019,"C:/Users/USER MSI/Documents/R Project/Lessonlearnt2022/data/Processed/Baseline_regionale2018_2019.sav")

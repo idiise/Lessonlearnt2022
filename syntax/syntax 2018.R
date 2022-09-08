@@ -27,13 +27,21 @@ BaseMenageNER_2018 <- read_sav("C:/Users/USER MSI/Documents/R Project/Lessonlear
 # Pour le Burkina pas de HHS ni de LCS
 
 BaseMenageBFA_2018<- BaseMenageBFA_2018 %>%  to_factor()
-codebook_BFA2018 <- var_label(BaseMenageBFA_2018)
-codebook_BFA2018 <- as.data.frame(do.call(rbind,codebook_BFA2018))
-codebook_BFA2018 <- codebook_BFA2018 %>% rownames_to_column()
+# codebook_BFA2018 <- var_label(BaseMenageBFA_2018)
+# codebook_BFA2018 <- as.data.frame(do.call(rbind,codebook_BFA2018))
+# codebook_BFA2018 <- codebook_BFA2018 %>% rownames_to_column()
 
-write_xlsx(codebook_BFA2018, "C:/Users/USER MSI/Documents/R Project/Lessonlearnt2022/Codebook/codebook_BFA2018.xlsx")
+# write_xlsx(codebook_BFA2018, "C:/Users/USER MSI/Documents/R Project/Lessonlearnt2022/Codebook/codebook_BFA2018.xlsx")
+# BaseMenageBFA_2018 <- BaseMenageBFA_2018 %>% rename(
+#   ADMIN1Name = q001_RegionNum
+# )
+oldBFA <- c("q001_RegionNum", "q002_ProvinceNum", "q0016_sexCMNum", "q0017_statutNum", "q0018_AgeCMnum", "q0019Num")
+newBFA <- c("ADMIN1Name", "ADMIN2Name", "HHHSex", "RelationHHH", "HHHAge", "HHHEduc")
 
-
+data.table::setnames(BaseMenageBFA_2018, old = oldBFA, new = newBFA)
+BaseMenageBFA_2018 <- BaseMenageBFA_2018 %>% mutate(
+  HHSize = NA
+)
 # FCS Burkina 2018 -------------------------------------------------------------
 
 # Rename variables using standardized variables namefor FCS
@@ -186,7 +194,7 @@ BaseMenageBFA_2018 <- BaseMenageBFA_2018 %>% mutate(
   HHhS_CH = NA 
 )
 
-# lCS BurÔkina -------------------------------------------------------------
+# lCS Burkina -------------------------------------------------------------
 
 BaseMenageBFA_2018 <- BaseMenageBFA_2018 %>% mutate(
   LhCSIStress1 = NA,
@@ -208,12 +216,18 @@ BaseMenageBFA_2018 <- BaseMenageBFA_2018 %>% mutate(
 # Codebook Mali 2018 --------------------------------------------------------------------
 
 BaseMenageBMZ_MLI2018<- to_factor(BaseMenageBMZ_MLI2018)
-codebook_MLI2018 <- var_label(BaseMenageBMZ_MLI2018)
-codebook_MLI2018 <- as.data.frame(do.call(rbind,codebook_MLI2018))
-codebook_MLI2018 <- codebook_MLI2018 %>% rownames_to_column()
+# codebook_MLI2018 <- var_label(BaseMenageBMZ_MLI2018)
+# codebook_MLI2018 <- as.data.frame(do.call(rbind,codebook_MLI2018))
+# codebook_MLI2018 <- codebook_MLI2018 %>% rownames_to_column()
 
-write_xlsx(codebook_MLI2018, "C:/Users/USER MSI/Documents/R Project/Lessonlearnt2022/Codebook/codebook_MLI2018.xlsx")
-
+# write_xlsx(codebook_MLI2018, "C:/Users/USER MSI/Documents/R Project/Lessonlearnt2022/Codebook/codebook_MLI2018.xlsx")
+oldMLI <- c("consentidentificationregion", "consentidentificationcercle", "Taille_MenageT_M", "COM11_sexe_chef_menage", "COM12_statut_matrimonial_chef_menage", "COM14_niveau_instruction_chef_menage")
+newMLI <- c("ADMIN1Name", "ADMIN2Name", "HHSize", "HHHSex", "RelationHHH", "HHHEduc")
+data.table::setnames(BaseMenageBMZ_MLI2018, old = oldMLI,
+                     new = newMLI)
+BaseMenageBMZ_MLI2018 <- BaseMenageBMZ_MLI2018 %>% mutate(
+  HHHAge = NA
+)
 
 # FCS Mali 2018 -----------------------------------------------------------
 
@@ -393,11 +407,16 @@ funModeling::freq(BaseMenageBMZ_MLI2018, "LhCSICat")
 # pas de HHS ni de condiment ni des 12 groupes HDDS
 
 BaseMenageMRT_2018<- to_factor(BaseMenageMRT_2018)
-codebook_MRT2018 <- var_label(BaseMenageMRT_2018)
-codebook_MRT2018 <- as.data.frame(do.call(rbind,codebook_MRT2018))
-codebook_MRT2018 <- codebook_MRT2018 %>% rownames_to_column()
+# codebook_MRT2018 <- var_label(BaseMenageMRT_2018)
+# codebook_MRT2018 <- as.data.frame(do.call(rbind,codebook_MRT2018))
+# codebook_MRT2018 <- codebook_MRT2018 %>% rownames_to_column()
 
-write_xlsx(codebook_MRT2018, "C:/Users/USER MSI/Documents/R Project/Lessonlearnt2022/Codebook/codebook_MRT2018.xlsx")
+# write_xlsx(codebook_MRT2018, "C:/Users/USER MSI/Documents/R Project/Lessonlearnt2022/Codebook/codebook_MRT2018.xlsx")
+
+oldMRT <- c("IG.3", "IG.4", "CCM.3", "CCM.4", "CCM.5", "CCM.8", "totalhh")
+newMRT <- c("ADMIN1Name", "ADMIN2Name", "HHHSex", "HHHAge", "RelationHHH", "HHHEduc", "HHSize")
+data.table::setnames(BaseMenageMRT_2018, old = oldMRT,
+                     new = newMRT)
 
 # FCS 2018 Mauritania -----------------------------------------------------
 
@@ -521,13 +540,21 @@ funModeling::freq(BaseMenageMRT_2018, "lcsi")
 
 
 # Codebook 2018 Niger -----------------------------------------------------
-
+# pas de hhs 
 BaseMenageNER_2018<- to_factor(BaseMenageNER_2018)
-codebook_NER2018 <- var_label(BaseMenageNER_2018)
-codebook_NER2018 <- as.data.frame(do.call(rbind,codebook_NER2018))
-codebook_NER2018 <- codebook_NER2018 %>% rownames_to_column()
+# codebook_NER2018 <- var_label(BaseMenageNER_2018)
+# codebook_NER2018 <- as.data.frame(do.call(rbind,codebook_NER2018))
+# codebook_NER2018 <- codebook_NER2018 %>% rownames_to_column()
 
-write_xlsx(codebook_NER2018, "C:/Users/USER MSI/Documents/R Project/Lessonlearnt2022/Codebook/codebook_NER2018.xlsx")
+# write_xlsx(codebook_NER2018, "C:/Users/USER MSI/Documents/R Project/Lessonlearnt2022/Codebook/codebook_NER2018.xlsx")
+
+oldNER <- c("id1", "id3b", "rc6", "rc7", "rc8", "rc9")
+newNER <- c("ADMIN1Name", "ADMIN2Name", "HHSize", "HHHSex", "RelationHHH", "HHHEduc")
+data.table::setnames(BaseMenageNER_2018, old = oldNER,
+                     new = newNER)
+BaseMenageNER_2018 <- BaseMenageNER_2018 %>% mutate(
+  HHHAge = NA
+)
 
 # FCS 2018 Niger ----------------------------------------------------------
 
@@ -702,12 +729,17 @@ funModeling::freq(BaseMenageMRT_2018, "LhCSICat")
 
 # Codebook Tchad 2018 -----------------------------------------------------
 BaseMenageTCD_2018 <- BaseMenageTCD_2018 %>%  to_factor()
-codebook_TCD2018 <- var_label(BaseMenageTCD_2018)
-codebook_TCD2018 <- as.data.frame(do.call(rbind,codebook_TCD2018))
-codebook_TCD2018 <- codebook_TCD2018 %>% rownames_to_column()
+# codebook_TCD2018 <- var_label(BaseMenageTCD_2018)
+# codebook_TCD2018 <- as.data.frame(do.call(rbind,codebook_TCD2018))
+# codebook_TCD2018 <- codebook_TCD2018 %>% rownames_to_column()
 
-write_xlsx(codebook_TCD2018, "C:/Users/USER MSI/Documents/R Project/Lessonlearnt2022/Codebook/codebook_TCD2018.xlsx")
+# write_xlsx(codebook_TCD2018, "C:/Users/USER MSI/Documents/R Project/Lessonlearnt2022/Codebook/codebook_TCD2018.xlsx")
 
+oldTCD <- c("region", "departement", "Taille_Globale_Menage", "sexe_cm", "age_CM", "instruction_cm", "statut_matrimonial_cm")
+newTCD <- c("ADMIN1Name", "ADMIN2Name", "HHSize", "HHHSex", "HHHAge", "HHHEduc", "RelationHHH")
+
+data.table::setnames(BaseMenageTCD_2018, old = oldTCD,
+                     new = newTCD)
 
 # FCS Tchad 2018 ----------------------------------------------------------
 
@@ -839,7 +871,9 @@ BaseMenageTCD_2018 <- BaseMenageTCD_2018 %>% mutate(
 funModeling::freq(BaseMenageTCD_2018, "LhCSICat")
 
 # Vérification variables et compilation -----------------------------------
-variables <- c("FCSStap", "FCSPulse", "FCSDairy", 
+variables <- c("ADMIN1Name", "ADMIN2Name", "HHSize", "HHHSex", 
+               "HHHAge", "HHHEduc", "RelationHHH",
+                "FCSStap", "FCSPulse", "FCSDairy", 
                "FCSPr", "FCSVeg", "FCSFruit", "FCSFat", 
                "FCSSugar","FCS", "FCSCat28", "FCSCond", "HDDSStapCer", 
                "HDDSStapRoot", "HDDSPulse", "HDDSDairy", 
@@ -854,56 +888,69 @@ variables <- c("FCSStap", "FCSPulse", "FCSDairy",
                "LhCSIEmergency3", "stress_coping", 
                "crisis_coping", "emergency_coping", 
                "LhCSICat", "HHhSNoFood_FR", "HHhSBedHung_FR", "HHhSNotEat_FR", "HHhS", "HHhS_CH")
-
+data <- as.data.frame(variables)
+writexl::write_xlsx(data, "data.xlsx")
 # Burkina
 setdiff(variables,names(BaseMenageBFA_2018))
 BaseMenageBFA_2018 <- BaseMenageBFA_2018 %>% mutate(
+  ADMIN0Name = "Burkina Fasso",
   Année = 2018,
   Survey = "Baseline",
   SurveyId = 1,
   Commentaire = "Base Ménage 24 décembre 2018"
-)  %>% select(Survey, SurveyId,Année, Commentaire, which(names(BaseMenageBFA_2018) %in% variables))
+)  %>% select(ADMIN0Name,Survey, SurveyId,Année, Commentaire, which(names(BaseMenageBFA_2018) %in% variables))
 
 # Mali
 setdiff(variables,names(BaseMenageBMZ_MLI2018))
 BaseMenageBMZ_MLI2018 <- BaseMenageBMZ_MLI2018 %>% mutate(
+  ADMIN0Name = "Mali",
   Année = 2018,
   Survey = "Baseline BMZ",
   SurveyId = 1,
   Commentaire = "BMZ Base Ménage 2018"
-) %>% select(Survey, SurveyId,Année, Commentaire, which(names(BaseMenageBMZ_MLI2018) %in% variables))
+) %>% select(ADMIN0Name,Survey, SurveyId,Année, Commentaire, which(names(BaseMenageBMZ_MLI2018) %in% variables))
 
 # Mauritanie
 setdiff(variables,names(BaseMenageMRT_2018))
 BaseMenageMRT_2018 <- BaseMenageMRT_2018 %>% mutate(
+  ADMIN0Name = "Mauritania",
   Année = 2018,
   Survey = "Baseline",
   SurveyId = 1,
   Commentaire = "Base Ménage FFA 2018"
-)  %>% select(Survey, SurveyId,Année, Commentaire, which(names(BaseMenageMRT_2018) %in% variables))
+)  %>% select(ADMIN0Name,Survey, SurveyId,Année, Commentaire, which(names(BaseMenageMRT_2018) %in% variables))
 
 # Niger
 setdiff(variables,names(BaseMenageNER_2018))
 BaseMenageNER_2018 <- BaseMenageNER_2018 %>% mutate(
+  ADMIN0Name = "Niger",
   Année = 2018,
   Survey = "Baseline",
   SurveyId = 1,
   Commentaire = "Base Ménage TICSP Novembre 2018"
-)  %>% select(Survey, SurveyId,Année, Commentaire, which(names(BaseMenageNER_2018) %in% variables))
+)  %>% select(ADMIN0Name,Survey, SurveyId,Année, Commentaire, which(names(BaseMenageNER_2018) %in% variables))
 
 # Tchad
 setdiff(variables,names(BaseMenageTCD_2018))
 BaseMenageTCD_2018 <- BaseMenageTCD_2018 %>% mutate(
+  ADMIN0Name = "Chad",
   Année = 2018,
   Survey = "Baseline",
   SurveyId = 1,
   Commentaire = "Base Ménage  2018"
-)  %>% select(Survey, SurveyId,Année, Commentaire, which(names(BaseMenageTCD_2018) %in% variables))
+)  %>% select(ADMIN0Name,Survey, SurveyId,Année, Commentaire, which(names(BaseMenageTCD_2018) %in% variables))
 
 Baseline_regionale2018 <- rbind(BaseMenageBMZ_MLI2018, BaseMenageBFA_2018, BaseMenageMRT_2018,
                                 BaseMenageNER_2018, BaseMenageTCD_2018)
 
 Baseline_regionale2018 <- Baseline_regionale2018 %>% apply_labels(
+  ADMIN1Name = "Région/Wilaya",
+  ADMIN2Name = "Département/MOUGHTAA",
+  HHHSex = "Sexe du chef de ménage",
+  HHHAge = "Age du chef de ménage",
+  HHHEduc = "Niveau d'instruction du chef de ménage",
+  RelationHHH = "Situation matrimoniale du chef de ménage",
+  HHSize = "Taille du ménage",
   FCSStap = "Consommation de céréal au cours des 7 derniers jours", 
   FCSPulse = "Consommation de légumineuse au cours des 7 derniers jours", 
   FCSDairy = "Consommation de Lait et Produits laitier au cours des 7 derniers jours",
@@ -953,13 +1000,15 @@ Baseline_regionale2018 <- Baseline_regionale2018 %>% apply_labels(
   HHhSNoFood_FR = "Fréquence manque de nourriture dûe à une manque de ressources au cours des 30 derniers jours", 
   HHhSBedHung_FR = "Fréquence dormir affamé au cours des 30 derniers jours", 
   HHhSNotEat_FR = "Fréquence rien manger jour  et nuit au cours des 30 derniers jours", 
-  HHhS = "Indice  Domestique de la Faim", "HHhS_CH = Groupe/Catégorie HHS"
+  HHhS = "Indice  Domestique de la Faim", "HHhS_CH = Groupe/Catégorie HHS",
+  HHhS_CH = "Groupe/Catégorie HHS"
 )
 Baseline_regionale2018 <- Baseline_regionale2018 %>% rename(
   Annee = Année
 )
 
-write_sav(Baseline_regionale2018, "C:/Users/USER MSI/Documents/R Project/Lessonlearnt2022/data/Processed/Baseline_regionale2018.sav")
+write_sav(Baseline_regionale2018, "C:/Users/USER MSI/Documents/R Project/Lessonlearnt2022/data/Processed/Last/Baseline_regionale2018.sav")
 
+# setdiff(variables,names(Baseline_regionale2019))
 
 
