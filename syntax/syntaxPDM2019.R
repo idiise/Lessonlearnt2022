@@ -1,4 +1,4 @@
-# imp◘ort package ----------------------------------------------------------
+# import package ----------------------------------------------------------
 
 library(tidyverse)
 library(fs)
@@ -155,7 +155,59 @@ BasePDMMRT_2019 <- BasePDMMRT_2019 %>% mutate(
 funModeling::freq(BasePDMMRT_2019, "LhCSICat")
 
 
-# Codebook Tchad PDM 2019 -------------------------------------------------
+# verification et Merging -------------------------------------------------
+variables <- c("ADMIN1Name", "ADMIN2Name", "HHSize", "HHHSex", 
+               "HHHAge", "HHHEduc", "RelationHHH",
+               "FCSStap", "FCSPulse", "FCSDairy", 
+               "FCSPr", "FCSVeg", "FCSFruit", "FCSFat", 
+               "FCSSugar","FCS", "FCSCat28", "FCSCond", "HDDSStapCer", 
+               "HDDSStapRoot", "HDDSPulse", "HDDSDairy", 
+               "HDDSPrMeat", "HDDSPrFish", "HDDSPrEgg", 
+               "HDDSVeg", "HDDSFruit", "HDDSFat", "HDDSSugar", 
+               "HDDSCond", "HDDS", "HDDS_CH", "rCSILessQlty", 
+               "rCSIBorrow", "rCSIMealSize", "rCSIMealAdult", 
+               "rCSIMealNb", "rCSI", "rCSI_CH", "LhCSIStress1", 
+               "LhCSIStress2", "LhCSIStress3", "LhCSIStress4", 
+               "LhCSICrisis1", "LhCSICrisis2", "LhCSICrisis3", 
+               "LhCSIEmergency1", "LhCSIEmergency2", 
+               "LhCSIEmergency3", "stress_coping", 
+               "crisis_coping", "emergency_coping", 
+               "LhCSICat", "HHhSNoFood_FR", "HHhSBedHung_FR", "HHhSNotEat_FR", "HHhS", "HHhS_CH")
+# Mrt
+setdiff(variables,names(BasePDMMRT_2019))
+BasePDMMRT_2019 <- BasePDMMRT_2019 %>% mutate(
+  ADMIN0Name = "Mauritania",
+  Annee = 2019,
+  Survey = "PDM",
+  SurveyId = 1,
+  Commentaire = "Base ménage PDM 2019 "
+)  %>% select(ADMIN0Name,Survey, SurveyId,Annee, Commentaire, which(names(BasePDMMRT_2019) %in% variables))
 
+Baseline_regionale2018 <- read_sav("C:/Users/USER MSI/Documents/R Project/Lessonlearnt2022/data/Processed/Last/Baseline_regionale2018.sav")
+Baseline_regionale2019 <- read_sav("C:/Users/USER MSI/Documents/R Project/Lessonlearnt2022/data/Processed/Last/Baseline_regionale2019.sav")
+setdiff(names(Baseline_regionale2018),names(Baseline_regionale2019))
+setdiff(names(Baseline_regionale2019),names(Baseline_regionale2018))
+Baseline_regionale2018_2019 <- rbind.data.frame(Baseline_regionale2018, Baseline_regionale2019)
+Baseline_regionale2018 <- Baseline_regionale2018 %>% mutate_if(
+  is.numeric, as.character
+)
+Baseline_regionale2019 <- Baseline_regionale2019 %>% mutate_if(
+  is.numeric, as.character
+)
+
+BasePDMMRT_2019 <- BasePDMMRT_2019 %>% mutate_if(
+  is.numeric, as.character
+)
+
+Baseline_regionale2018_2019_final <- rbind(Baseline_regionale2018_2019,BasePDMMRT_2019)
+setdiff(names(Baseline_regionale2018_2019),names(BasePDMMRT_2019))
+setdiff(names(BasePDMMRT_2019),names(Baseline_regionale2018_2019))
+
+
+
+
+
+write_sav(Baseline_regionale2018_2019_final,"C:/Users/USER MSI/Documents/R Project/Lessonlearnt2022/data/Processed/Last/Baseline_regionale2018_2019_final.sav" )
+write_xlsx(class_2019,"C:/Users/USER MSI/Documents/R Project/Lessonlearnt2022/class_2019.xlsx" )
 
 
